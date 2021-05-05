@@ -1,10 +1,10 @@
-package br.com.contas;
+package br.com.contas.infrastructure.controllers;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ContasApplicationTests {
+class ContasAPagarControllerTests {
 
 	@Test
 	void contextLoads() {
