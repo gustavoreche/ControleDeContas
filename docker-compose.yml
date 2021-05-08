@@ -1,0 +1,35 @@
+version: "3.4"
+
+networks:
+  banco:
+
+services:
+  db:
+    image: mysql:5.7
+    container_name: "containerBancoDeDados"
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./scriptBancoDeDados:/docker-entrypoint-initdb.d
+      - .docker/data/db:/var/lib/mysql
+    ports:
+      - 3308:3306
+    restart: always
+    networks:
+      - banco
+
+  app:
+    image: openjdk:8-jre-alpine
+    container_name: "containerApp"
+    ports:
+      - 8080:8080
+    volumes:
+      - ./target:/usr/src/myapp
+    working_dir: /usr/src/myapp
+    command: java -jar contas-0.0.1-SNAPSHOT.jar
+    restart: always
+    depends_on:
+      - db
+    networks:
+      - banco

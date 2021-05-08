@@ -31,7 +31,7 @@ public class ContasAPagarInclusaoDTO implements Serializable {
 	public String getNome() {
 		return nome;
 	}
-
+	
 	public Double getValorOriginal() {
 		return valorOriginal;
 	}

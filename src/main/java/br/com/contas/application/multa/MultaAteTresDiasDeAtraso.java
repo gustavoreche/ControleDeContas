@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import br.com.contas.model.RegraDeMultaPorConta;
+
 @Component
 @Qualifier("ateTres")
 public class MultaAteTresDiasDeAtraso implements Multa {
@@ -19,7 +21,7 @@ public class MultaAteTresDiasDeAtraso implements Multa {
 	}
 
 	@Override
-	public Double valorComMulta(int dias, Double valor) {
+	public RegraDeMultaPorConta valorComMulta(int dias, Double valor) {
 		if(dias <= 3) {
 			return this.calculadorDeMultaEJuros.calcula(valor, dias, 2, 0.1);
 		}

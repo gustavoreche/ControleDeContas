@@ -3,8 +3,6 @@ package br.com.contas.infrastructure.controllers;
 import java.time.LocalDate;
 import java.util.List;
 
-import javax.validation.Valid;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
@@ -12,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import br.com.contas.application.repositorie.ContasAPagarRepository;
+import br.com.contas.application.repositorie.RegraDeMultaPorContaRepository;
 import br.com.contas.model.ContasAPagar;
 import br.com.contas.model.dto.ContasAPagarListagemDTO;
 
@@ -53,13 +52,16 @@ public class ContasAPagarControllerHooks {
 	protected static final Integer QUANTIDADE_DIAS_DE_ATRASO_CONTA_5 = 6;
 
 	private ContasAPagarRepository contasAPagarRepository;
+	private RegraDeMultaPorContaRepository regraDeMultaPorContaRepository;
 	private ContasAPagarInclusaoDTOTest contaIncluida;
     private TestRestTemplate restTemplate;
 	
 	@Autowired
-	public ContasAPagarControllerHooks(ContasAPagarRepository contasAPagarRepository, 
+	public ContasAPagarControllerHooks(ContasAPagarRepository contasAPagarRepository,
+			RegraDeMultaPorContaRepository regraDeMultaPorContaRepository,
 			TestRestTemplate restTemplate) {
 		this.contasAPagarRepository = contasAPagarRepository;
+		this.regraDeMultaPorContaRepository = regraDeMultaPorContaRepository;
 		this.restTemplate = restTemplate;
 	}
 	
@@ -75,6 +77,7 @@ public class ContasAPagarControllerHooks {
 	}
 	
 	protected void limpaBaseDeDados() {
+		this.regraDeMultaPorContaRepository.deleteAll();
 		this.contasAPagarRepository.deleteAll();
 	}
 	
@@ -82,7 +85,7 @@ public class ContasAPagarControllerHooks {
 		return incluiConta(incluiUmaConta());
 	}
 	
-	private @Valid ContasAPagarInclusaoDTOTest incluiUmaConta() {
+	private ContasAPagarInclusaoDTOTest incluiUmaConta() {
 		this.contaIncluida = new ContasAPagarInclusaoDTOTest(NOME_CONTA_2, VALOR_ORIGINAL_CONTA_2, DATA_VENCIMENTO_CONTA_2, DATA_PAGAMENTO_CONTA_2);
 		return this.contaIncluida;
 	}
@@ -91,7 +94,7 @@ public class ContasAPagarControllerHooks {
 		return incluiConta(incluiUmaContaCom2DiasDeAtrasoDePagamento());
 	}
 	
-	private @Valid ContasAPagarInclusaoDTOTest incluiUmaContaCom2DiasDeAtrasoDePagamento() {
+	private ContasAPagarInclusaoDTOTest incluiUmaContaCom2DiasDeAtrasoDePagamento() {
 		this.contaIncluida = new ContasAPagarInclusaoDTOTest(NOME_CONTA_3, VALOR_ORIGINAL_CONTA_3, DATA_VENCIMENTO_CONTA_3, DATA_PAGAMENTO_CONTA_3);
 		return this.contaIncluida;
 	}
@@ -100,7 +103,7 @@ public class ContasAPagarControllerHooks {
 		return incluiConta(incluiUmaContaCom4DiasDeAtrasoDePagamento());
 	}
 	
-	private @Valid ContasAPagarInclusaoDTOTest incluiUmaContaCom4DiasDeAtrasoDePagamento() {
+	private ContasAPagarInclusaoDTOTest incluiUmaContaCom4DiasDeAtrasoDePagamento() {
 		this.contaIncluida = new ContasAPagarInclusaoDTOTest(NOME_CONTA_4, VALOR_ORIGINAL_CONTA_4, DATA_VENCIMENTO_CONTA_4, DATA_PAGAMENTO_CONTA_4);
 		return this.contaIncluida;
 	}
@@ -109,7 +112,7 @@ public class ContasAPagarControllerHooks {
 		return incluiConta(incluiUmaContaCom6DiasDeAtrasoDePagamento());
 	}
 	
-	private @Valid ContasAPagarInclusaoDTOTest incluiUmaContaCom6DiasDeAtrasoDePagamento() {
+	private ContasAPagarInclusaoDTOTest incluiUmaContaCom6DiasDeAtrasoDePagamento() {
 		this.contaIncluida = new ContasAPagarInclusaoDTOTest(NOME_CONTA_5, VALOR_ORIGINAL_CONTA_5, DATA_VENCIMENTO_CONTA_5, DATA_PAGAMENTO_CONTA_5);
 		return this.contaIncluida;
 	}
@@ -118,7 +121,7 @@ public class ContasAPagarControllerHooks {
 		return incluiConta(incluiUmaContaComNomeNulo());
 	}
 	
-	private @Valid ContasAPagarInclusaoDTOTest incluiUmaContaComNomeNulo() {
+	private ContasAPagarInclusaoDTOTest incluiUmaContaComNomeNulo() {
 		this.contaIncluida = new ContasAPagarInclusaoDTOTest(null, VALOR_ORIGINAL_CONTA_5, DATA_VENCIMENTO_CONTA_5, DATA_PAGAMENTO_CONTA_5);
 		return this.contaIncluida;
 	}
@@ -127,7 +130,7 @@ public class ContasAPagarControllerHooks {
 		return incluiConta(incluiUmaContaComNomeVazio());
 	}
 	
-	private @Valid ContasAPagarInclusaoDTOTest incluiUmaContaComNomeVazio() {
+	private ContasAPagarInclusaoDTOTest incluiUmaContaComNomeVazio() {
 		this.contaIncluida = new ContasAPagarInclusaoDTOTest("", VALOR_ORIGINAL_CONTA_5, DATA_VENCIMENTO_CONTA_5, DATA_PAGAMENTO_CONTA_5);
 		return this.contaIncluida;
 	}
@@ -136,7 +139,7 @@ public class ContasAPagarControllerHooks {
 		return incluiConta(incluiUmaContaComValorOriginalComValorZero());
 	}
 	
-	private @Valid ContasAPagarInclusaoDTOTest incluiUmaContaComValorOriginalComValorZero() {
+	private ContasAPagarInclusaoDTOTest incluiUmaContaComValorOriginalComValorZero() {
 		this.contaIncluida = new ContasAPagarInclusaoDTOTest(NOME_CONTA_5, "0.0", DATA_VENCIMENTO_CONTA_5, DATA_PAGAMENTO_CONTA_5);
 		return this.contaIncluida;
 	}
@@ -145,7 +148,7 @@ public class ContasAPagarControllerHooks {
 		return incluiConta(incluiUmaContaComValorOriginalNulo());
 	}
 	
-	private @Valid ContasAPagarInclusaoDTOTest incluiUmaContaComValorOriginalNulo() {
+	private ContasAPagarInclusaoDTOTest incluiUmaContaComValorOriginalNulo() {
 		this.contaIncluida = new ContasAPagarInclusaoDTOTest(NOME_CONTA_5, null, DATA_VENCIMENTO_CONTA_5, DATA_PAGAMENTO_CONTA_5);
 		return this.contaIncluida;
 	}
@@ -154,7 +157,7 @@ public class ContasAPagarControllerHooks {
 		return incluiConta(incluiUmaContaComValorOriginalComFormatoErrado());
 	}
 	
-	private @Valid ContasAPagarInclusaoDTOTest incluiUmaContaComValorOriginalComFormatoErrado() {
+	private ContasAPagarInclusaoDTOTest incluiUmaContaComValorOriginalComFormatoErrado() {
 		this.contaIncluida = new ContasAPagarInclusaoDTOTest(NOME_CONTA_5, "a", DATA_VENCIMENTO_CONTA_5, DATA_PAGAMENTO_CONTA_5);
 		return this.contaIncluida;
 	}
@@ -163,7 +166,7 @@ public class ContasAPagarControllerHooks {
 		return incluiConta(incluiUmaContaComValorOriginalComVazio());
 	}
 	
-	private @Valid ContasAPagarInclusaoDTOTest incluiUmaContaComValorOriginalComVazio() {
+	private ContasAPagarInclusaoDTOTest incluiUmaContaComValorOriginalComVazio() {
 		this.contaIncluida = new ContasAPagarInclusaoDTOTest(NOME_CONTA_5, "", DATA_VENCIMENTO_CONTA_5, DATA_PAGAMENTO_CONTA_5);
 		return this.contaIncluida;
 	}
@@ -172,7 +175,7 @@ public class ContasAPagarControllerHooks {
 		return incluiConta(incluiUmaContaComDataVencimentoNulo());
 	}
 	
-	private @Valid ContasAPagarInclusaoDTOTest incluiUmaContaComDataVencimentoNulo() {
+	private ContasAPagarInclusaoDTOTest incluiUmaContaComDataVencimentoNulo() {
 		this.contaIncluida = new ContasAPagarInclusaoDTOTest(NOME_CONTA_5, VALOR_ORIGINAL_CONTA_5, null, DATA_PAGAMENTO_CONTA_5);
 		return this.contaIncluida;
 	}
@@ -181,7 +184,7 @@ public class ContasAPagarControllerHooks {
 		return incluiConta(incluiUmaContaComDataVencimentoVazio());
 	}
 	
-	private @Valid ContasAPagarInclusaoDTOTest incluiUmaContaComDataVencimentoVazio() {
+	private ContasAPagarInclusaoDTOTest incluiUmaContaComDataVencimentoVazio() {
 		this.contaIncluida = new ContasAPagarInclusaoDTOTest(NOME_CONTA_5, VALOR_ORIGINAL_CONTA_5, "", DATA_PAGAMENTO_CONTA_5);
 		return this.contaIncluida;
 	}
@@ -190,7 +193,7 @@ public class ContasAPagarControllerHooks {
 		return incluiConta(incluiUmaContaComDataVencimentoNoFormatoErrado());
 	}
 	
-	private @Valid ContasAPagarInclusaoDTOTest incluiUmaContaComDataVencimentoNoFormatoErrado() {
+	private ContasAPagarInclusaoDTOTest incluiUmaContaComDataVencimentoNoFormatoErrado() {
 		this.contaIncluida = new ContasAPagarInclusaoDTOTest(NOME_CONTA_5, VALOR_ORIGINAL_CONTA_5, "01/01/2021", DATA_PAGAMENTO_CONTA_5);
 		return this.contaIncluida;
 	}
@@ -199,7 +202,7 @@ public class ContasAPagarControllerHooks {
 		return incluiConta(incluiUmaContaComDataPagamentoNulo());
 	}
 	
-	private @Valid ContasAPagarInclusaoDTOTest incluiUmaContaComDataPagamentoNulo() {
+	private ContasAPagarInclusaoDTOTest incluiUmaContaComDataPagamentoNulo() {
 		this.contaIncluida = new ContasAPagarInclusaoDTOTest(NOME_CONTA_5, VALOR_ORIGINAL_CONTA_5, DATA_VENCIMENTO_CONTA_5, null);
 		return this.contaIncluida;
 	}
@@ -208,7 +211,7 @@ public class ContasAPagarControllerHooks {
 		return incluiConta(incluiUmaContaComDataPagamentoVazio());
 	}
 	
-	private @Valid ContasAPagarInclusaoDTOTest incluiUmaContaComDataPagamentoVazio() {
+	private ContasAPagarInclusaoDTOTest incluiUmaContaComDataPagamentoVazio() {
 		this.contaIncluida = new ContasAPagarInclusaoDTOTest(NOME_CONTA_5, VALOR_ORIGINAL_CONTA_5, DATA_VENCIMENTO_CONTA_5, "");
 		return this.contaIncluida;
 	}
@@ -217,7 +220,7 @@ public class ContasAPagarControllerHooks {
 		return incluiConta(incluiUmaContaComDataPagamentoNoFormatoErrado());
 	}
 	
-	private @Valid ContasAPagarInclusaoDTOTest incluiUmaContaComDataPagamentoNoFormatoErrado() {
+	private ContasAPagarInclusaoDTOTest incluiUmaContaComDataPagamentoNoFormatoErrado() {
 		this.contaIncluida = new ContasAPagarInclusaoDTOTest(NOME_CONTA_5, VALOR_ORIGINAL_CONTA_5, DATA_VENCIMENTO_CONTA_5, "01/01/2021");
 		return this.contaIncluida;
 	}
