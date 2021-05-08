@@ -28,17 +28,6 @@ public class ContasAPagarInclusaoDTO implements Serializable {
 	@NotNull(message = "O campo não pode ser nulo")
 	private LocalDate dataPagamento;
 	
-	public ContasAPagarInclusaoDTO(
-			@NotNull(message = "O campo não pode ser nulo") @NotEmpty(message = "O campo não pode ser vazio") String nome,
-			@NotNull(message = "O campo não pode ser nulo") @DecimalMin(value = "0.01", message = "O valor original tem que ser maior que zero") Double valorOriginal,
-			@NotNull(message = "O campo não pode ser nulo") LocalDate dataVencimento,
-			@NotNull(message = "O campo não pode ser nulo") LocalDate dataPagamento) {
-		this.nome = nome;
-		this.valorOriginal = valorOriginal;
-		this.dataVencimento = dataVencimento;
-		this.dataPagamento = dataPagamento;
-	}
-
 	public String getNome() {
 		return nome;
 	}

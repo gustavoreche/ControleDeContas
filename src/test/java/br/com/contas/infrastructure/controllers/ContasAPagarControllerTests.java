@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +31,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import br.com.contas.model.ContasAPagar;
-import br.com.contas.model.dto.ContasAPagarInclusaoDTO;
 import br.com.contas.model.dto.ContasAPagarListagemDTO;
 
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
@@ -156,6 +156,30 @@ class ContasAPagarControllerTests {
 	}
 	
 	@Test
+	void incluiConta_comParametroValorOriginalPreenchidoComFormatoErrado_deveRetornar400() {
+		ResponseEntity<String> retornoDoPreenchimento = this.contasAPagarContollerHooks
+				.dadoOPreenchimentoDoCampoValorOriginalComFormatoErradoNoEndpointDeInclusaoDeConta();
+		
+		entaoOHttpStatusDeveSer(HttpStatus.BAD_REQUEST, retornoDoPreenchimento.getStatusCode());
+	}
+	
+	@Test
+	void incluiConta_comParametroValorOriginalPreenchidoComVazio_deveRetornar400() {
+		ResponseEntity<String> retornoDoPreenchimento = this.contasAPagarContollerHooks
+				.dadoOPreenchimentoDoCampoValorOriginalComVazioNoEndpointDeInclusaoDeConta();
+		
+		entaoOHttpStatusDeveSer(HttpStatus.BAD_REQUEST, retornoDoPreenchimento.getStatusCode());
+	}
+	
+	@Test
+	void incluiConta_comParametroDataVencimentoPreenchidoComVazio_deveRetornar400() {
+		ResponseEntity<String> retornoDoPreenchimento = this.contasAPagarContollerHooks
+				.dadoOPreenchimentoDoCampoDataVencimentoComVazioNoEndpointDeInclusaoDeConta();
+		
+		entaoOHttpStatusDeveSer(HttpStatus.BAD_REQUEST, retornoDoPreenchimento.getStatusCode());
+	}
+	
+	@Test
 	void incluiConta_comParametroDataVencimentoPreenchidoComNulo_deveRetornar400() {
 		ResponseEntity<String> retornoDoPreenchimento = this.contasAPagarContollerHooks
 				.dadoOPreenchimentoDoCampoDataVencimentoComNuloNoEndpointDeInclusaoDeConta();
@@ -164,9 +188,33 @@ class ContasAPagarControllerTests {
 	}
 	
 	@Test
+	void incluiConta_comParametroDataVencimentoPreenchidoComFormatoErrado_deveRetornar400() {
+		ResponseEntity<String> retornoDoPreenchimento = this.contasAPagarContollerHooks
+				.dadoOPreenchimentoDoCampoDataVencimentoComFormatoErradoNoEndpointDeInclusaoDeConta();
+		
+		entaoOHttpStatusDeveSer(HttpStatus.BAD_REQUEST, retornoDoPreenchimento.getStatusCode());
+	}
+	
+	@Test
 	void incluiConta_comParametroDataPagamentoPreenchidoComNulo_deveRetornar400() {
 		ResponseEntity<String> retornoDoPreenchimento = this.contasAPagarContollerHooks
 				.dadoOPreenchimentoDoCampoDataPagamentoComNuloNoEndpointDeInclusaoDeConta();
+		
+		entaoOHttpStatusDeveSer(HttpStatus.BAD_REQUEST, retornoDoPreenchimento.getStatusCode());
+	}
+	
+	@Test
+	void incluiConta_comParametroDataPagamentoPreenchidoComVazio_deveRetornar400() {
+		ResponseEntity<String> retornoDoPreenchimento = this.contasAPagarContollerHooks
+				.dadoOPreenchimentoDoCampoDataPagamentoComVazioNoEndpointDeInclusaoDeConta();
+		
+		entaoOHttpStatusDeveSer(HttpStatus.BAD_REQUEST, retornoDoPreenchimento.getStatusCode());
+	}
+	
+	@Test
+	void incluiConta_comParametroDataPagamentoPreenchidoComFormatoErrado_deveRetornar400() {
+		ResponseEntity<String> retornoDoPreenchimento = this.contasAPagarContollerHooks
+				.dadoOPreenchimentoDoCampoDataPagamentoComFormatoErradoNoEndpointDeInclusaoDeConta();
 		
 		entaoOHttpStatusDeveSer(HttpStatus.BAD_REQUEST, retornoDoPreenchimento.getStatusCode());
 	}
@@ -188,13 +236,13 @@ class ContasAPagarControllerTests {
 		assertEquals(VALOR_CORRIGIDO_CONTA_1, body.get(0).getValorCorrigido());
 	}
 	
-	private void eORetornoDoBancoDeDadosDeveEstarPreenchido(ContasAPagarInclusaoDTO contaPreenchida, List<ContasAPagar> contas,
+	private void eORetornoDoBancoDeDadosDeveEstarPreenchido(ContasAPagarInclusaoDTOTest contaPreenchida, List<ContasAPagar> contas,
 			Integer diasDeAtraso, Double valorCorrigido) {
 		assertNotNull(contas);
 		assertEquals(contaPreenchida.getNome(), contas.get(0).getNome());
-		assertEquals(contaPreenchida.getValorOriginal(), contas.get(0).getValorOriginal());
-		assertEquals(contaPreenchida.getDataPagamento(), contas.get(0).getDataPagamento());
-		assertEquals(contaPreenchida.getDataVencimento(), contas.get(0).getDataVencimento());
+		assertEquals(Double.parseDouble(contaPreenchida.getValorOriginal()), contas.get(0).getValorOriginal());
+		assertEquals(LocalDate.parse(contaPreenchida.getDataPagamento()), contas.get(0).getDataPagamento());
+		assertEquals(LocalDate.parse(contaPreenchida.getDataVencimento()), contas.get(0).getDataVencimento());
 		assertEquals(diasDeAtraso, contas.get(0).getDiasDeAtraso());
 		assertEquals(valorCorrigido, contas.get(0).getValorCorrigido());
 	}
