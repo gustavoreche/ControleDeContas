@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import br.com.contas.model.ContasAPagar;
 
 public class ContasAPagarListagemDTO implements Serializable {
@@ -15,7 +17,11 @@ public class ContasAPagarListagemDTO implements Serializable {
 	private Double valorOriginal;
 	private Double valorCorrigido;
 	private Integer quantidadeDeDiasDeAtraso;
+	@JsonFormat(pattern="yyyy-MM-dd")
 	private LocalDate dataPagamento;
+	
+	public ContasAPagarListagemDTO() {
+	}
 
 	public ContasAPagarListagemDTO(ContasAPagar conta) {
 		this.nome = conta.getNome();

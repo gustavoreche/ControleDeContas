@@ -26,9 +26,4 @@ public class MultaAteTresDiasDeAtraso implements Multa {
 		return this.proximaMulta.valorComMulta(dias, valor);
 	}
 
-	@Override
-	public void proximaMulta(Multa proximaMulta) {
-		this.proximaMulta = proximaMulta;		
-	}
-
 }

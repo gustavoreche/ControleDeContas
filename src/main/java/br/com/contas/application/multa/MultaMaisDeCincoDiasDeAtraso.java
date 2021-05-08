@@ -23,8 +23,4 @@ public class MultaMaisDeCincoDiasDeAtraso implements Multa {
 		return valor;
 	}
 
-	@Override
-	public void proximaMulta(Multa proximaMulta) {
-	}
-
 }

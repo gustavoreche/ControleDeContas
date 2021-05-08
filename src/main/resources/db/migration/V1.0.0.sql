@@ -1,4 +1,4 @@
-CREATE TABLE `conta`.`contas_a_pagar` (
+CREATE TABLE `contas_a_pagar` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `nome` VARCHAR(200) NOT NULL,
   `valor_original` DOUBLE NOT NULL,
