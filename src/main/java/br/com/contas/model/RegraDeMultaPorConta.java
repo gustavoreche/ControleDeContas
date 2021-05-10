@@ -59,4 +59,28 @@ public class RegraDeMultaPorConta implements Serializable {
 		this.contasAPagar = contaAPagar;
 	}
 
+	public Double getValorOriginal() {
+		return valorOriginal;
+	}
+
+	public Double getPorcentagemMulta() {
+		return porcentagemMulta;
+	}
+
+	public Double getValorComMulta() {
+		return valorComMulta;
+	}
+
+	public Double getPorcentagemJuros() {
+		return porcentagemJuros;
+	}
+
+	public Double getValorJurosPorDia() {
+		return valorJurosPorDia;
+	}
+
+	public ContasAPagar getContasAPagar() {
+		return contasAPagar;
+	}
+	
 }

@@ -2,21 +2,34 @@ package br.com.contas.infrastructure.controllers;
 
 import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.DATA_PAGAMENTO_CONTA_1;
 import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.NOME_CONTA_1;
+import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.PORCENTAGEM_JUROS_CONTA_3;
+import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.PORCENTAGEM_JUROS_CONTA_4;
+import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.PORCENTAGEM_JUROS_CONTA_5;
+import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.PORCENTAGEM_MULTA_CONTA_3;
+import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.PORCENTAGEM_MULTA_CONTA_4;
+import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.PORCENTAGEM_MULTA_CONTA_5;
 import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.QUANTIDADE_DIAS_DE_ATRASO_CONTA_1;
 import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.QUANTIDADE_DIAS_DE_ATRASO_CONTA_2;
 import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.QUANTIDADE_DIAS_DE_ATRASO_CONTA_3;
 import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.QUANTIDADE_DIAS_DE_ATRASO_CONTA_4;
 import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.QUANTIDADE_DIAS_DE_ATRASO_CONTA_5;
+import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.VALOR_COM_MULTA_CONTA_3;
+import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.VALOR_COM_MULTA_CONTA_4;
+import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.VALOR_COM_MULTA_CONTA_5;
 import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.VALOR_CORRIGIDO_CONTA_1;
 import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.VALOR_CORRIGIDO_CONTA_2;
 import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.VALOR_CORRIGIDO_CONTA_3;
 import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.VALOR_CORRIGIDO_CONTA_4;
 import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.VALOR_CORRIGIDO_CONTA_5;
+import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.VALOR_JUROS_POR_DIA_CONTA_3;
+import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.VALOR_JUROS_POR_DIA_CONTA_4;
+import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.VALOR_JUROS_POR_DIA_CONTA_5;
 import static br.com.contas.infrastructure.controllers.ContasAPagarControllerHooks.VALOR_ORIGINAL_CONTA_1;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,6 +44,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import br.com.contas.model.ContasAPagar;
+import br.com.contas.model.RegraDeMultaPorConta;
 import br.com.contas.model.dto.ContasAPagarListagemDTO;
 
 @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
@@ -66,8 +80,11 @@ class ContasAPagarControllerTests {
 
 		List<ContasAPagarListagemDTO> listaDeContas = new ArrayList<ContasAPagarListagemDTO>();
 		Collections.addAll(listaDeContas, contas.getBody());
+		List<RegraDeMultaPorConta> regraDoCalculoDeMulta = this.contasAPagarContollerHooks
+				.eRealizarAConsultaAoBancoDeDadosDaTabelaDeRegraDoCalculoDeMulta();
 		
 		entaoOHttpStatusDeveSer(HttpStatus.OK, contas.getStatusCode());
+		eAConsultaATabelaDeRegraDeCalculoDaMultaDeveSerEstarVazia(regraDoCalculoDeMulta);
 		eOBodyDeveEstarPreenchido(listaDeContas);
 	}
 	
@@ -78,8 +95,11 @@ class ContasAPagarControllerTests {
 		
 		List<ContasAPagar> contas = this.contasAPagarContollerHooks
 				.quandoRealizarAConsultaAoBancoDeDados();
+		List<RegraDeMultaPorConta> regraDoCalculoDeMulta = this.contasAPagarContollerHooks
+				.eRealizarAConsultaAoBancoDeDadosDaTabelaDeRegraDoCalculoDeMulta();
 
 		entaoOHttpStatusDeveSer(HttpStatus.CREATED, retornoDoPreenchimento.getStatusCode());
+		eAConsultaATabelaDeRegraDeCalculoDaMultaDeveSerEstarVazia(regraDoCalculoDeMulta);
 		eORetornoDoBancoDeDadosDeveEstarPreenchido(this.contasAPagarContollerHooks.getContaIncluida(), contas,
 				QUANTIDADE_DIAS_DE_ATRASO_CONTA_2, VALOR_CORRIGIDO_CONTA_2);
 	}
@@ -91,10 +111,13 @@ class ContasAPagarControllerTests {
 		
 		List<ContasAPagar> contas = this.contasAPagarContollerHooks
 				.quandoRealizarAConsultaAoBancoDeDados();
+		List<RegraDeMultaPorConta> regraDoCalculoDeMulta = this.contasAPagarContollerHooks
+				.eRealizarAConsultaAoBancoDeDadosDaTabelaDeRegraDoCalculoDeMulta();
 
 		entaoOHttpStatusDeveSer(HttpStatus.CREATED, retornoDoPreenchimento.getStatusCode());
 		eORetornoDoBancoDeDadosDeveEstarPreenchido(this.contasAPagarContollerHooks.getContaIncluida(), contas,
-				QUANTIDADE_DIAS_DE_ATRASO_CONTA_3, VALOR_CORRIGIDO_CONTA_3);
+				QUANTIDADE_DIAS_DE_ATRASO_CONTA_3, VALOR_CORRIGIDO_CONTA_3, regraDoCalculoDeMulta, 
+				PORCENTAGEM_MULTA_CONTA_3, PORCENTAGEM_JUROS_CONTA_3, VALOR_COM_MULTA_CONTA_3, VALOR_JUROS_POR_DIA_CONTA_3);
 	}
 	
 	@Test
@@ -104,10 +127,13 @@ class ContasAPagarControllerTests {
 		
 		List<ContasAPagar> contas = this.contasAPagarContollerHooks
 				.quandoRealizarAConsultaAoBancoDeDados();
-
+		List<RegraDeMultaPorConta> regraDoCalculoDeMulta = this.contasAPagarContollerHooks
+				.eRealizarAConsultaAoBancoDeDadosDaTabelaDeRegraDoCalculoDeMulta();
+		
 		entaoOHttpStatusDeveSer(HttpStatus.CREATED, retornoDoPreenchimento.getStatusCode());
 		eORetornoDoBancoDeDadosDeveEstarPreenchido(this.contasAPagarContollerHooks.getContaIncluida(),contas,
-				QUANTIDADE_DIAS_DE_ATRASO_CONTA_4, VALOR_CORRIGIDO_CONTA_4);
+				QUANTIDADE_DIAS_DE_ATRASO_CONTA_4, VALOR_CORRIGIDO_CONTA_4, regraDoCalculoDeMulta, 
+				PORCENTAGEM_MULTA_CONTA_4, PORCENTAGEM_JUROS_CONTA_4, VALOR_COM_MULTA_CONTA_4, VALOR_JUROS_POR_DIA_CONTA_4);
 	}
 	
 	@Test
@@ -117,10 +143,13 @@ class ContasAPagarControllerTests {
 		
 		List<ContasAPagar> contas = this.contasAPagarContollerHooks
 				.quandoRealizarAConsultaAoBancoDeDados();
+		List<RegraDeMultaPorConta> regraDoCalculoDeMulta = this.contasAPagarContollerHooks
+				.eRealizarAConsultaAoBancoDeDadosDaTabelaDeRegraDoCalculoDeMulta();
 
 		entaoOHttpStatusDeveSer(HttpStatus.CREATED, retornoDoPreenchimento.getStatusCode());
 		eORetornoDoBancoDeDadosDeveEstarPreenchido(this.contasAPagarContollerHooks.getContaIncluida(),contas,
-				QUANTIDADE_DIAS_DE_ATRASO_CONTA_5, VALOR_CORRIGIDO_CONTA_5);
+				QUANTIDADE_DIAS_DE_ATRASO_CONTA_5, VALOR_CORRIGIDO_CONTA_5, regraDoCalculoDeMulta, 
+				PORCENTAGEM_MULTA_CONTA_5, PORCENTAGEM_JUROS_CONTA_5, VALOR_COM_MULTA_CONTA_5, VALOR_JUROS_POR_DIA_CONTA_5);
 	}
 	
 	@Test
@@ -236,6 +265,10 @@ class ContasAPagarControllerTests {
 		assertEquals(VALOR_CORRIGIDO_CONTA_1, body.get(0).getValorCorrigido());
 	}
 	
+	private void eAConsultaATabelaDeRegraDeCalculoDaMultaDeveSerEstarVazia(List<RegraDeMultaPorConta> regraDoCalculoDeMulta) {
+		assertEquals(new ArrayList<RegraDeMultaPorConta>(), regraDoCalculoDeMulta);
+	}
+	
 	private void eORetornoDoBancoDeDadosDeveEstarPreenchido(ContasAPagarInclusaoDTOTest contaPreenchida, List<ContasAPagar> contas,
 			Integer diasDeAtraso, Double valorCorrigido) {
 		assertNotNull(contas);
@@ -245,6 +278,33 @@ class ContasAPagarControllerTests {
 		assertEquals(LocalDate.parse(contaPreenchida.getDataVencimento()), contas.get(0).getDataVencimento());
 		assertEquals(diasDeAtraso, contas.get(0).getDiasDeAtraso());
 		assertEquals(valorCorrigido, contas.get(0).getValorCorrigido());
+	}
+	
+	private void eORetornoDoBancoDeDadosDeveEstarPreenchido(ContasAPagarInclusaoDTOTest contaPreenchida, List<ContasAPagar> contas,
+			Integer diasDeAtraso, Double valorCorrigido,
+			List<RegraDeMultaPorConta> regraDoCalculoDeMulta,
+			Double porcentagemMulta, Double porcentagemJuros,
+			Double valorComMulta, Double valorJurosPorDia) {
+		assertNotNull(contas);
+		assertEquals(contaPreenchida.getNome(), contas.get(0).getNome());
+		assertEquals(Double.parseDouble(contaPreenchida.getValorOriginal()), contas.get(0).getValorOriginal());
+		assertEquals(LocalDate.parse(contaPreenchida.getDataPagamento()), contas.get(0).getDataPagamento());
+		assertEquals(LocalDate.parse(contaPreenchida.getDataVencimento()), contas.get(0).getDataVencimento());
+		assertEquals(diasDeAtraso, contas.get(0).getDiasDeAtraso());
+		assertEquals(valorCorrigido, contas.get(0).getValorCorrigido());
+		
+		DecimalFormat df = new DecimalFormat("0.###");
+		String valorComMultaFormatado = df.format(regraDoCalculoDeMulta.get(0).getValorComMulta());
+		String valorJurosPorDiaFormatado = df.format(regraDoCalculoDeMulta.get(0).getValorJurosPorDia()).replace(",", ".");
+		
+		assertEquals(diasDeAtraso, regraDoCalculoDeMulta.get(0).getDiasDeAtraso());
+		assertEquals(valorCorrigido, regraDoCalculoDeMulta.get(0).getValorCorrigido());
+		assertEquals(porcentagemJuros, regraDoCalculoDeMulta.get(0).getPorcentagemJuros());
+		assertEquals(porcentagemMulta, regraDoCalculoDeMulta.get(0).getPorcentagemMulta());
+		assertEquals(valorComMulta, Double.parseDouble(valorComMultaFormatado));
+		assertEquals(valorJurosPorDia, Double.parseDouble(valorJurosPorDiaFormatado));
+		assertEquals(contas.get(0).getId(), regraDoCalculoDeMulta.get(0).getContasAPagar().getId());
+		assertEquals(Double.parseDouble(contaPreenchida.getValorOriginal()), regraDoCalculoDeMulta.get(0).getValorOriginal());
 	}
 	
 }

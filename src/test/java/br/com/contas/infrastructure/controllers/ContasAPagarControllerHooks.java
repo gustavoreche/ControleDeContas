@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import br.com.contas.application.repositorie.ContasAPagarRepository;
 import br.com.contas.application.repositorie.RegraDeMultaPorContaRepository;
 import br.com.contas.model.ContasAPagar;
+import br.com.contas.model.RegraDeMultaPorConta;
 import br.com.contas.model.dto.ContasAPagarListagemDTO;
 
 @Component
@@ -36,6 +37,10 @@ public class ContasAPagarControllerHooks {
 	protected static final String DATA_PAGAMENTO_CONTA_3 = LocalDate.now().plusDays(2).toString();
 	protected static final Double VALOR_CORRIGIDO_CONTA_3 = 102.204;
 	protected static final Integer QUANTIDADE_DIAS_DE_ATRASO_CONTA_3 = 2;
+	protected static final Double PORCENTAGEM_MULTA_CONTA_3 = 2.0;
+	protected static final Double PORCENTAGEM_JUROS_CONTA_3 = 0.1;
+	protected static final Double VALOR_COM_MULTA_CONTA_3 = 102.0;
+	protected static final Double VALOR_JUROS_POR_DIA_CONTA_3 = 0.102;
 	
 	protected static final String NOME_CONTA_4 = "teste 4";
 	protected static final String VALOR_ORIGINAL_CONTA_4 = "200.0";
@@ -43,6 +48,10 @@ public class ContasAPagarControllerHooks {
 	protected static final String DATA_PAGAMENTO_CONTA_4 = LocalDate.now().plusDays(4).toString();
 	protected static final Double VALOR_CORRIGIDO_CONTA_4 = 207.648;
 	protected static final Integer QUANTIDADE_DIAS_DE_ATRASO_CONTA_4 = 4;
+	protected static final Double PORCENTAGEM_MULTA_CONTA_4 = 3.0;
+	protected static final Double PORCENTAGEM_JUROS_CONTA_4 = 0.2;
+	protected static final Double VALOR_COM_MULTA_CONTA_4 = 206.0;
+	protected static final Double VALOR_JUROS_POR_DIA_CONTA_4 = 0.412;
 	
 	protected static final String NOME_CONTA_5 = "teste 5";
 	protected static final String VALOR_ORIGINAL_CONTA_5 = "300.0";
@@ -50,6 +59,10 @@ public class ContasAPagarControllerHooks {
 	protected static final String DATA_PAGAMENTO_CONTA_5 = LocalDate.now().plusDays(6).toString();
 	protected static final Double VALOR_CORRIGIDO_CONTA_5 = 320.67;
 	protected static final Integer QUANTIDADE_DIAS_DE_ATRASO_CONTA_5 = 6;
+	protected static final Double PORCENTAGEM_MULTA_CONTA_5 = 5.0;
+	protected static final Double PORCENTAGEM_JUROS_CONTA_5 = 0.3;
+	protected static final Double VALOR_COM_MULTA_CONTA_5 = 315.0;
+	protected static final Double VALOR_JUROS_POR_DIA_CONTA_5 = 0.945;
 
 	private ContasAPagarRepository contasAPagarRepository;
 	private RegraDeMultaPorContaRepository regraDeMultaPorContaRepository;
@@ -240,6 +253,10 @@ public class ContasAPagarControllerHooks {
 	
 	protected List<ContasAPagar> quandoRealizarAConsultaAoBancoDeDados() {
 		return this.contasAPagarRepository.findAll();
+	}
+	
+	protected List<RegraDeMultaPorConta> eRealizarAConsultaAoBancoDeDadosDaTabelaDeRegraDoCalculoDeMulta() {
+		return this.regraDeMultaPorContaRepository.findAll();
 	}
 	
 	public ContasAPagarInclusaoDTOTest getContaIncluida() {
